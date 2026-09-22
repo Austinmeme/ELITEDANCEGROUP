@@ -1,0 +1,4 @@
+- [x] Replace the home placeholder with the MIRRA dance agency experience
+- [x] Add generated visual assets and a cinematic hero media treatment
+- [x] Add responsive agency sections, interactions, and route metadata
+- [x] Verify the live preview and clean up any runtime issues
