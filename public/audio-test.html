@@ -1,0 +1,67 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Elite Dance Group audio test</title>
+<style>
+  body{font:16px/1.6 system-ui,sans-serif;background:#1a120b;color:#f2e8d5;margin:0;padding:24px;max-width:760px}
+  h1{font-size:20px;margin:0 0 4px}
+  p.sub{color:#a89880;margin:0 0 20px}
+  video{width:280px;background:#000;border-radius:4px;display:block;margin:12px 0}
+  button{font:inherit;background:#f5a742;color:#1a120b;border:0;border-radius:999px;padding:10px 20px;cursor:pointer;font-weight:600}
+  button.sec{background:#3a2c1e;color:#f2e8d5}
+  table{border-collapse:collapse;width:100%;margin-top:16px;font-size:14px}
+  td{padding:6px 10px;border-bottom:1px solid #3a2c1e}
+  td:first-child{color:#a89880;width:48%}
+  .ok{color:#7fd18b}.bad{color:#ff8a7a}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+</style>
+
+<h1>Audio test — reel-01.mp4</h1>
+<p class="sub">This page uses plain HTML with no framework. If sound works here but not on the site, the bug is in my code. If it fails here too, it is the browser or the file.</p>
+
+<video id="v" src="/videos/reel-01.mp4" loop playsinline controls></video>
+
+<div class="row">
+  <button id="go">▶ Play WITH sound</button>
+  <button id="mute" class="sec">Mute</button>
+</div>
+
+<table id="out"></table>
+
+<script>
+const v = document.getElementById('v');
+const out = document.getElementById('out');
+
+function yn(b){ return b ? '<span class="ok">yes</span>' : '<span class="bad">no</span>'; }
+
+function report(){
+  // In Chrome this counter stays 0 if no audio is ever decoded.
+  const decoded = v.webkitAudioDecodedByteCount;
+  const rows = [
+    ['File loads', yn(v.readyState >= 2)],
+    ['Duration', v.duration ? v.duration.toFixed(1) + 's' : '—'],
+    ['Currently playing', yn(!v.paused && !v.ended)],
+    ['Muted', v.muted ? '<span class="bad">YES — this is why it is silent</span>' : '<span class="ok">no</span>'],
+    ['Volume', Math.round(v.volume * 100) + '%'],
+    ['Audio bytes decoded', decoded === undefined ? 'n/a in this browser'
+      : (decoded > 0 ? '<span class="ok">' + decoded.toLocaleString() + ' — audio IS decoding</span>'
+                     : '<span class="bad">0 — no audio decoded</span>')],
+    ['Playback error', v.error ? '<span class="bad">code ' + v.error.code + ' ' + (v.error.message||'') + '</span>' : '<span class="ok">none</span>'],
+  ];
+  out.innerHTML = rows.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>').join('');
+}
+
+document.getElementById('go').onclick = () => {
+  v.muted = false;
+  v.volume = 1;
+  v.play().then(() => {
+    setTimeout(report, 1200);
+  }).catch(e => {
+    out.innerHTML = '<tr><td>play() was rejected</td><td class="bad">' + e.name + ': ' + e.message + '</td></tr>';
+  });
+};
+document.getElementById('mute').onclick = () => { v.muted = true; report(); };
+
+v.addEventListener('loadeddata', report);
+setInterval(report, 1500);
+report();
+</script>

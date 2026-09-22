@@ -1,0 +1,135 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-studio-ink: var(--studio-ink);
+  --color-studio-ink-2: var(--studio-ink-2);
+  --color-studio-ink-3: var(--studio-ink-3);
+  --color-studio-cream: var(--studio-cream);
+  --color-studio-cream-2: var(--studio-cream-2);
+  --color-studio-amber: var(--studio-amber);
+  --color-studio-copper: var(--studio-copper);
+  --color-studio-rose: var(--studio-rose);
+  --color-studio-chrome: var(--studio-chrome);
+  --color-studio-telemetry: var(--studio-telemetry);
+  --font-display: "Chakra Petch", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Barlow", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.17 0.025 62);
+  --foreground: oklch(0.92 0.035 84);
+  --card: oklch(0.21 0.035 60);
+  --card-foreground: oklch(0.92 0.035 84);
+  --popover: oklch(0.21 0.035 60);
+  --popover-foreground: oklch(0.92 0.035 84);
+  --primary: oklch(0.79 0.16 65);
+  --primary-foreground: oklch(0.17 0.025 62);
+  --secondary: oklch(0.24 0.04 62);
+  --secondary-foreground: oklch(0.92 0.035 84);
+  --muted: oklch(0.24 0.04 62);
+  --muted-foreground: oklch(0.68 0.04 72);
+  --accent: oklch(0.71 0.14 24);
+  --accent-foreground: oklch(0.17 0.025 62);
+  --destructive: oklch(0.64 0.2 25);
+  --destructive-foreground: oklch(0.98 0.01 90);
+  --border: oklch(0.32 0.04 62);
+  --input: oklch(0.29 0.035 62);
+  --ring: oklch(0.79 0.16 65);
+  --studio-ink: oklch(0.17 0.025 62);
+  --studio-ink-2: oklch(0.24 0.04 62);
+  --studio-ink-3: oklch(0.31 0.045 62);
+  --studio-cream: oklch(0.92 0.035 84);
+  --studio-cream-2: oklch(0.84 0.045 78);
+  --studio-amber: oklch(0.79 0.16 65);
+  --studio-copper: oklch(0.64 0.14 43);
+  --studio-rose: oklch(0.71 0.14 24);
+  --studio-chrome: oklch(0.76 0.02 210);
+  --studio-telemetry: oklch(0.65 0.09 155);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--color-studio-ink);
+    color: var(--color-studio-cream);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-studio-amber);
+    color: var(--color-studio-ink);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility reveal-rise {
+  animation: rise 0.8s cubic-bezier(0.22, 0.8, 0.2, 1) both;
+}
+
+/* Small caps label used above section headings. Sparingly — it is the only
+   place monospace is allowed to appear in the layout. */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
