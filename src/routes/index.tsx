@@ -229,6 +229,15 @@ const projects: Project[] = [
 const VISIBLE_PROJECT_COUNT = 6;
 
 /**
+ * The still shown while a clip loads, generated from its own first frame into
+ * public/posters/ (see the `posters` npm script). A card therefore paints real
+ * artwork the moment it mounts instead of a grey box — which matters most
+ * behind "See more", where a dozen cards appear at once and would otherwise
+ * all sit empty until their video data arrived.
+ */
+const posterFor = (video: string) => video.replace("/videos/", "/posters/").replace(/\.mp4$/, ".jpg");
+
+/**
  * The badge number shown on each clip, keyed by video path.
  *
  * Numbering follows the order a visitor actually sees, not the order of the
@@ -290,7 +299,6 @@ function ProjectCard({
   onLeftView: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [loaded, setLoaded] = useState(false);
   const credit = dancerByName(project.dancer);
   const number = projectNumbers.get(project.video);
 
@@ -331,7 +339,9 @@ function ProjectCard({
           onLeftViewRef.current();
         }
       },
-      { rootMargin: "200px", threshold: [0.2, 0.6] },
+      // A generous margin means a clip has already begun loading by the time it
+      // scrolls in, rather than starting from cold at the moment it appears.
+      { rootMargin: "600px", threshold: [0.2, 0.6] },
     );
 
     observer.observe(el);
@@ -372,8 +382,8 @@ function ProjectCard({
             loop
             playsInline
             preload="none"
+            poster={posterFor(project.video)}
             tabIndex={-1}
-            onLoadedData={() => setLoaded(true)}
             className={`w-full bg-studio-ink-2 object-cover transition duration-700 group-hover:scale-[1.03] ${
               project.aspect === "landscape" ? "aspect-[16/9]" : "aspect-[9/16]"
             }`}
@@ -383,7 +393,8 @@ function ProjectCard({
               {String(number).padStart(2, "0")}
             </span>
           )}
-          {!loaded && <span className="absolute inset-0 animate-pulse bg-studio-ink-3/40" />}
+          {/* The poster carries the card until the video paints, so the old
+              pulsing placeholder would only dim real artwork. */}
           <span className="absolute inset-0 bg-studio-ink/5 transition-colors group-hover:bg-studio-ink/30" />
           <span className="absolute bottom-4 right-4 grid size-11 place-items-center rounded-full bg-studio-amber text-studio-ink opacity-0 transition-opacity group-hover:opacity-100">
             <Play className="size-4 fill-current" />
@@ -1577,6 +1588,7 @@ function MirraHome() {
               return (
                 <video
                   src={selectedProject.video}
+                  poster={posterFor(selectedProject.video)}
                   controls
                   autoPlay
                   playsInline
